@@ -16,7 +16,7 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
-//go:embed fonts/MPLUS1Code-Regular.ttf
+//go:embed fonts/MPLUS1p-Regular.ttf
 var fontData []byte
 
 // renderAsPNG formats the table as a PNG image with grid lines and alternating row colors.
