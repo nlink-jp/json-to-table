@@ -16,6 +16,7 @@
 *   **多彩な出力形式**:
     *   `text`: ターミナル表示に適した、罫線付きのプレーンテキスト形式。
     *   `md`: GitHub Flavored Markdown形式のテーブル。
+    *   `csv`: コンマ区切り形式。スプレッドシートでの利用に適しています。
     *   `png`: **日本語対応の画像形式**。レポートやチャットでの共有に最適です。
     *   `html`: 基本的なスタイルが適用された自己完結型のHTMLファイル。
     *   `slack-block-kit`: SlackのBlock Kit形式のJSON出力。Slackメッセージで直接利用するのに最適です。
@@ -73,6 +74,11 @@ cat testdata/test_data.json | json-to-table
 *   **Slack Block Kit形式で出力:**
     ```bash
     splunk-cli run ... | jq .results | json-to-table --format slack-block-kit
+    ```
+
+*   **CSV形式でファイルに出力:**
+    ```bash
+    splunk-cli run ... | jq .results | json-to-table --format csv -o report.csv
     ```
 
 ### **カラムの選択と順序付け**
@@ -157,7 +163,7 @@ cat testdata/test_data.json | json-to-table
 
 ## **フラグ一覧**
 
-*   `--format`: 出力形式 (`text`, `md`, `png`, `html`, `slack-block-kit`, `blocks`)。デフォルトは`text`。
+*   `--format`: 出力形式 (`text`, `md`, `csv`, `png`, `html`, `slack-block-kit`, `blocks`)。デフォルトは`text`。
 *   `-o <file>`: 出力先のファイルパス。デフォルトは標準出力。
 *   `--columns, -c <order>`: 包含するカラムと希望する順序をカンマ区切りで指定。`*`は残りのカラムのワイルドカードとして使用。
 *   `--exclude-columns, -e <order>`: 除外するカラムをカンマ区切りで指定。`*`はワイルドカードとして使用。

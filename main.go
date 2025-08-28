@@ -14,7 +14,7 @@ var version = "dev"
 // --- Main Execution ---
 
 func main() {
-	format := flag.String("format", "text", "Output format: text, md, png, html, slack-block-kit, blocks")
+	format := flag.String("format", "text", "Output format: text, md, csv, png, html, slack-block-kit, blocks")
 	output := flag.String("o", "", "Output file path (default: stdout)")
 	title := flag.String("title", "", "Title for the image output")
 	fontSize := flag.Float64("font-size", 12, "Font size for the image output")
@@ -60,6 +60,8 @@ func main() {
 		outStr, err = renderAsHTML(table)
 	case "slack-block-kit", "blocks":
 		outData, err = renderAsSlackBlockKit(table)
+	case "csv":
+		outStr, err = renderAsCSV(table)
 	default:
 		err = fmt.Errorf("unknown format: %s", *format)
 	}

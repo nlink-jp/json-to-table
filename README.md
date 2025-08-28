@@ -16,6 +16,7 @@ For a detailed list of changes, please see the [CHANGELOG](CHANGELOG.md).
 *   **Multiple Output Formats**:
     *   `text`: Plain text with borders, suitable for terminal display.
     *   `md`: GitHub Flavored Markdown table.
+    *   `csv`: Comma-separated values, suitable for spreadsheets.
     *   `png`: **Image format with Japanese font support**, perfect for sharing in reports or chat.
     *   `html`: Self-contained HTML file with basic styling.
     *   `slack-block-kit`: JSON output formatted for Slack Block Kit, ideal for direct use in Slack messages.
@@ -73,6 +74,11 @@ Use the `--format` flag to change the output format.
 *   **Output as Slack Block Kit JSON:**
     ```bash
     splunk-cli run ... | jq .results | json-to-table --format slack-block-kit
+    ```
+
+*   **Output as a CSV file:**
+    ```bash
+    splunk-cli run ... | jq .results | json-to-table --format csv -o report.csv
     ```
 
 ### **Column Selection and Ordering**
@@ -157,7 +163,7 @@ To build the project from source, you need Go and `make` installed.
 
 ## **Flags**
 
-*   `--format`: Output format (`text`, `md`, `png`, `html`, `slack-block-kit`, `blocks`). Default is `text`.
+*   `--format`: Output format (`text`, `md`, `csv`, `png`, `html`, `slack-block-kit`, `blocks`). Default is `text`.
 *   `-o <file>`: Output file path. Default is standard output.
 *   `--columns, -c <order>`: Comma-separated list of columns to include and their desired order. Use `*` as a wildcard for other columns.
 *   `--exclude-columns, -e <order>`: Comma-separated list of columns to exclude. Use `*` as a wildcard.
