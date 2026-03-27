@@ -1,109 +1,55 @@
-# Makefile for json-to-table
+BINARY  := json-to-table
+VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+LDFLAGS := -ldflags "-X main.version=$(VERSION)"
 
-# --- Configuration ---
-# Dynamically get version from git tag, or default to 0.0.0-dev if no tags exist
-VERSION := $(shell git describe --tags --abbrev=0 --match "v[0-9]*" 2>/dev/null || echo "0.0.0-dev")
-VERSION_CLEAN := $(patsubst v%,%,$(VERSION))
+PLATFORMS := \
+	linux/amd64 \
+	linux/arm64 \
+	darwin/amd64 \
+	darwin/arm64 \
+	windows/amd64
 
-SOURCE_FILE := . # Changed from json-to-table.go to . to build the current package
-OUTPUT_NAME := json-to-table
-DIST_DIR := dist
-MODULE_NAME := json-to-table
+.PHONY: build build-all test lint check package clean help
 
-# Font configuration
-FONT_LICENSE := FONTS_LICENSE
+## build: Build for the current platform
+build:
+	@mkdir -p dist
+	go build $(LDFLAGS) -o dist/$(BINARY) .
 
-# Go parameters
-GO := go
-GOBIN := $(shell go env GOBIN)
-LDFLAGS := -ldflags="-X main.version=$(VERSION)"
-GO_BUILD := $(GO) build $(LDFLAGS) # SOURCE_FILE will be appended by the build commands
-GO_MOD_TIDY := $(GO) mod tidy
+## build-all: Cross-compile for all target platforms
+build-all:
+	@mkdir -p dist
+	CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY)-linux-amd64   .
+	CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build $(LDFLAGS) -o dist/$(BINARY)-linux-arm64   .
+	CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY)-darwin-amd64  .
+	CGO_ENABLED=0 GOOS=darwin  GOARCH=arm64 go build $(LDFLAGS) -o dist/$(BINARY)-darwin-arm64  .
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY)-windows-amd64.exe .
 
-# Build targets
-.PHONY: all build clean tidy help package vulncheck lint
+## test: Run the full test suite
+test:
+	go test -race -cover ./...
 
-all: build
-
-help:
-	@echo "Usage:"
-	@echo "  make all          - Build binaries for all target platforms (default)."
-	@echo "  make build        - Alias for 'all'."
-	@echo "  make package      - Build and package all binaries into ZIP archives for release."
-	@echo "  make build-macos  - Build for macOS (Universal)."
-	@echo "  make build-linux  - Build for Linux (amd64)."
-	@echo "  make build-windows- Build for Windows (amd64)."
-	@echo "  make tidy         - Run go mod tidy."
-	@echo "  make clean        - Remove build artifacts."
-	@echo "  make vulncheck    - Run vulnerability checks."
-	@echo "  make lint         - Run lint checks."
-
-# --- Build Recipes ---
-
-build: tidy
-	@echo "🚀 Starting build process for json-to-table..."
-	@rm -rf $(DIST_DIR)
-	@$(MAKE) build-macos
-	@$(MAKE) build-windows
-	@$(MAKE) build-linux
-	@echo "\n✅ All builds completed successfully!"
-	@echo "   Binaries are located in the './$(DIST_DIR)' directory."
-
-build-macos:
-	@echo "📦 Building for macOS (Universal)..."
-	@mkdir -p $(DIST_DIR)/macos
-	@GOOS=darwin GOARCH=amd64 $(GO_BUILD) -o $(DIST_DIR)/macos/$(OUTPUT_NAME)_amd64 $(SOURCE_FILE)
-	@GOOS=darwin GOARCH=arm64 $(GO_BUILD) -o $(DIST_DIR)/macos/$(OUTPUT_NAME)_arm64 $(SOURCE_FILE)
-	@lipo -create -output $(DIST_DIR)/macos/$(OUTPUT_NAME) $(DIST_DIR)/macos/$(OUTPUT_NAME)_amd64 $(DIST_DIR)/macos/$(OUTPUT_NAME)_arm64
-	@rm $(DIST_DIR)/macos/$(OUTPUT_NAME)_amd64 $(DIST_DIR)/macos/$(OUTPUT_NAME)_arm64
-	@echo "🍏 macOS build complete: ./$(DIST_DIR)/macos/$(OUTPUT_NAME)"
-
-build-windows:
-	@echo "📦 Building for Windows (amd64)..."
-	@mkdir -p $(DIST_DIR)/windows
-	@GOOS=windows GOARCH=amd64 $(GO_BUILD) -o $(DIST_DIR)/windows/$(OUTPUT_NAME).exe $(SOURCE_FILE)
-	@echo "🪟  Windows build complete: ./$(DIST_DIR)/windows/$(OUTPUT_NAME).exe"
-
-build-linux:
-	@echo "📦 Building for Linux (amd64)..."
-	@mkdir -p $(DIST_DIR)/linux
-	@GOOS=linux GOARCH=amd64 $(GO_BUILD) -o $(DIST_DIR)/linux/$(OUTPUT_NAME) $(SOURCE_FILE)
-	@echo "🐧 Linux build complete: ./$(DIST_DIR)/linux/$(OUTPUT_NAME)"
-
-# --- Packaging ---
-
-package: build
-	@echo "📦 Packaging binaries for release..."
-	@cp $(FONT_LICENSE) $(DIST_DIR)/macos/
-	@cp $(FONT_LICENSE) $(DIST_DIR)/windows/
-	@cp $(FONT_LICENSE) $(DIST_DIR)/linux/
-	@cd $(DIST_DIR)/macos && zip ../$(OUTPUT_NAME)-$(VERSION_CLEAN)-macos-universal.zip ./*
-	@cd $(DIST_DIR)/windows && zip ../$(OUTPUT_NAME)-$(VERSION_CLEAN)-windows-amd64.zip ./*
-	@cd $(DIST_DIR)/linux && zip ../$(OUTPUT_NAME)-$(VERSION_CLEAN)-linux-amd64.zip ./*
-	@echo "\n✅ All packages created successfully in './$(DIST_DIR)' directory."
-
-# --- Code Quality ---
-
-vulncheck:
-	@echo "🔍 Running vulnerability checks..."
-	@$(GO) vet ./...
-	@$(GOBIN)govulncheck ./...
-	@echo "   > Vulnerability checks complete."
-
+## lint: Run golangci-lint
 lint:
-	@echo "🧹 Running lint checks..."
-	@$(GOBIN)golangci-lint run ./...
-	@echo "   > Lint checks complete."
+	golangci-lint run ./...
 
-# --- Dependency Management ---
+## check: Run lint + test + build-all
+check: lint test build-all
 
-tidy:
-	@echo "📦 Tidying dependencies..."
-	@$(GO_MOD_TIDY)
+## package: Build and package binaries as .zip archives for all platforms
+package: build-all
+	$(foreach platform,$(PLATFORMS), \
+		$(eval GOOS=$(word 1,$(subst /, ,$(platform)))) \
+		$(eval GOARCH=$(word 2,$(subst /, ,$(platform)))) \
+		$(eval EXT=$(if $(filter windows,$(GOOS)),.exe,)) \
+		$(eval ARCHIVE=dist/$(BINARY)-$(VERSION)-$(GOOS)-$(GOARCH).zip) \
+		zip -j $(ARCHIVE) dist/$(BINARY)-$(GOOS)-$(GOARCH)$(EXT) LICENSE README.md FONTS_LICENSE ; \
+	)
 
-# --- Cleanup ---
-
+## clean: Remove build artifacts
 clean:
-	@echo "🧹 Cleaning up old builds..."
-	@rm -rf $(DIST_DIR)
-	@echo "   > Cleanup complete."
+	rm -rf dist/
+
+## help: Show this help
+help:
+	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## //'
