@@ -1,16 +1,14 @@
 # **JSON to Table (json-to-table)**
 
-This project was collaboratively developed by **magifd2** and **Google's Gemini**.
+This project was collaboratively developed by **nlink-jp** and **Google's Gemini**.
 
 [日本語のREADMEはこちら](README.ja.md)
 
-## **Overview**
-
-`json-to-table` is a versatile command-line utility written in Go, designed as a companion tool for [`magifd2/splunk-cli`](https://github.com/nlink-jp/splunk-cli). It formats a JSON array into a well-structured table. It reads JSON data from standard input, making it ideal for directly piping the output of commands like `splunk-cli ... | jq .results` to convert it into a human-readable format or an image suitable for reports.
+`json-to-table` is a versatile command-line utility written in Go, designed as a companion tool for [`nlink-jp/splunk-cli`](https://github.com/nlink-jp/splunk-cli). It formats a JSON array into a well-structured table. It reads JSON data from standard input, making it ideal for directly piping the output of commands like `splunk-cli ... | jq .results` to convert it into a human-readable format or an image suitable for reports.
 
 For a detailed list of changes, please see the [CHANGELOG](CHANGELOG.md).
 
-### **Key Features**
+## **Features**
 
 *   **Versatile Input**: Accepts a JSON array of objects from standard input.
 *   **Multiple Output Formats**:
@@ -139,6 +137,16 @@ To exclude `_internal_id` and `timestamp` first, then display `user`, `action`, 
 ... | json-to-table -e "_internal_id,timestamp" -c "user,action,*"
 ```
 
+### **Flags**
+
+*   `--format`: Output format (`text`, `md`, `csv`, `png`, `html`, `slack-block-kit`, `blocks`). Default is `text`.
+*   `-o <file>`: Output file path. Default is standard output.
+*   `--columns, -c <order>`: Comma-separated list of columns to include and their desired order. Use `*` as a wildcard for other columns.
+*   `--exclude-columns, -e <order>`: Comma-separated list of columns to exclude. Use `*` as a wildcard.
+*   `--title <text>`: Title for the PNG output.
+*   `--font-size <number>`: Font size for the PNG output. Default is 12.
+*   `--version`: Print version information and exit.
+
 ## **Building from Source**
 
 To build the project from source, you need Go and `make` installed.
@@ -161,16 +169,6 @@ To build the project from source, you need Go and `make` installed.
     ```
     This will create ZIP archives for each OS in the `dist` directory, ready for a GitHub release.
 
-## **Flags**
-
-*   `--format`: Output format (`text`, `md`, `csv`, `png`, `html`, `slack-block-kit`, `blocks`). Default is `text`.
-*   `-o <file>`: Output file path. Default is standard output.
-*   `--columns, -c <order>`: Comma-separated list of columns to include and their desired order. Use `*` as a wildcard for other columns.
-*   `--exclude-columns, -e <order>`: Comma-separated list of columns to exclude. Use `*` as a wildcard.
-*   `--title <text>`: Title for the PNG output.
-*   `--font-size <number>`: Font size for the PNG output. Default is 12.
-*   `--version`: Print version information and exit.
-
 ## **Acknowledgements**
 
 This tool uses the **Mplus 1 Code** font, which is licensed under the SIL Open Font License, Version 1.1. We are grateful to the M+ FONTS Project for providing this excellent font.
@@ -178,7 +176,3 @@ This tool uses the **Mplus 1 Code** font, which is licensed under the SIL Open F
 ## **License**
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## **Author**
-
-[magifd2](https://github.com/magifd2)

@@ -1,16 +1,14 @@
 # **JSON to Table (json-to-table)**
 
-このプロジェクトは **magifd2** と **Google の Gemini** の協同開発です。
+このプロジェクトは **nlink-jp** と **Google の Gemini** の協同開発です。
 
 [English README is here](README.md)
-
-## **概要**
 
 `json-to-table`は、[`nlink-jp/splunk-cli`](https://github.com/nlink-jp/splunk-cli) のコンパニオンツールとして開発された、Go言語製の汎用的なコマンドライン補助ツールです。JSON配列を整形されたテーブルとして出力します。標準入力からJSONデータを受け取るため、`splunk-cli ... | jq .results`のようなコマンドの出力を直接パイプして、人間に読みやすい形式や、レポートに貼り付けやすい画像形式に変換することを主な目的としています。
 
 変更点の詳細については、[CHANGELOG](CHANGELOG.md)をご覧ください。
 
-### **主な機能**
+## **特徴**
 
 *   **汎用的な入力**: 標準入力から、オブジェクトのJSON配列を受け取ります。
 *   **多彩な出力形式**:
@@ -139,6 +137,16 @@ cat testdata/test_data.json | json-to-table
 ... | json-to-table -e "_internal_id,timestamp" -c "user,action,*"
 ```
 
+### **フラグ一覧**
+
+*   `--format`: 出力形式 (`text`, `md`, `csv`, `png`, `html`, `slack-block-kit`, `blocks`)。デフォルトは`text`。
+*   `-o <file>`: 出力先のファイルパス。デフォルトは標準出力。
+*   `--columns, -c <order>`: 包含するカラムと希望する順序をカンマ区切りで指定。`*`は残りのカラムのワイルドカードとして使用。
+*   `--exclude-columns, -e <order>`: 除外するカラムをカンマ区切りで指定。`*`はワイルドカードとして使用。
+*   `--title <text>`: PNG出力時のタイトル。
+*   `--font-size <number>`: PNG出力時のフォントサイズ。デフォルトは12。
+*   `--version`: バージョン情報を表示して終了します。
+
 ## **ソースからのビルド**
 
 ソースからビルドするには、Goと`make`がインストールされている必要があります。
@@ -161,16 +169,6 @@ cat testdata/test_data.json | json-to-table
     ```
     各OS向けのZIPアーカイブが`dist`ディレクトリに作成され、GitHubリリースにそのまま添付できます。
 
-## **フラグ一覧**
-
-*   `--format`: 出力形式 (`text`, `md`, `csv`, `png`, `html`, `slack-block-kit`, `blocks`)。デフォルトは`text`。
-*   `-o <file>`: 出力先のファイルパス。デフォルトは標準出力。
-*   `--columns, -c <order>`: 包含するカラムと希望する順序をカンマ区切りで指定。`*`は残りのカラムのワイルドカードとして使用。
-*   `--exclude-columns, -e <order>`: 除外するカラムをカンマ区切りで指定。`*`はワイルドカードとして使用。
-*   `--title <text>`: PNG出力時のタイトル。
-*   `--font-size <number>`: PNG出力時のフォントサイズ。デフォルトは12。
-*   `--version`: バージョン情報を表示して終了します。
-
 ## **謝辞**
 
 このツールは **Mplus 1 Code** フォントを使用しています。このフォントは、SIL Open Font License, Version 1.1 のもとでライセンスされています。素晴らしいフォントを提供してくださった M+ FONTS Project に感謝します。
@@ -178,7 +176,3 @@ cat testdata/test_data.json | json-to-table
 ## **ライセンス**
 
 このプロジェクトはMITライセンスのもとで公開されています。詳細は[LICENSE](LICENSE)ファイルをご覧ください。
-
-## **作者**
-
-[nlink-jp](https://github.com/nlink-jp)
