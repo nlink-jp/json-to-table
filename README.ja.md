@@ -6,7 +6,7 @@
 
 ## **概要**
 
-`json-to-table`は、[`magifd2/splunk-cli`](https://github.com/magifd2/splunk-cli) のコンパニオンツールとして開発された、Go言語製の汎用的なコマンドライン補助ツールです。JSON配列を整形されたテーブルとして出力します。標準入力からJSONデータを受け取るため、`splunk-cli ... | jq .results`のようなコマンドの出力を直接パイプして、人間に読みやすい形式や、レポートに貼り付けやすい画像形式に変換することを主な目的としています。
+`json-to-table`は、[`nlink-jp/splunk-cli`](https://github.com/nlink-jp/splunk-cli) のコンパニオンツールとして開発された、Go言語製の汎用的なコマンドライン補助ツールです。JSON配列を整形されたテーブルとして出力します。標準入力からJSONデータを受け取るため、`splunk-cli ... | jq .results`のようなコマンドの出力を直接パイプして、人間に読みやすい形式や、レポートに貼り付けやすい画像形式に変換することを主な目的としています。
 
 変更点の詳細については、[CHANGELOG](CHANGELOG.md)をご覧ください。
 
@@ -31,7 +31,7 @@
 
 ## **インストール**
 
-macOS、Windows、Linux向けのコンパイル済みバイナリは[リリースページ](https://github.com/magifd2/json-to-table/releases)から入手できます。
+macOS、Windows、Linux向けのコンパイル済みバイナリは[リリースページ](https://github.com/nlink-jp/json-to-table/releases)から入手できます。
 
 ## **使い方**
 
@@ -145,7 +145,7 @@ cat testdata/test_data.json | json-to-table
 
 1.  **リポジトリをクローン:**
     ```bash
-    git clone https://github.com/magifd2/json-to-table.git
+    git clone https://github.com/nlink-jp/json-to-table.git
     cd json-to-table
     ```
 
@@ -181,4 +181,4 @@ cat testdata/test_data.json | json-to-table
 
 ## **作者**
 
-[magifd2](https://github.com/magifd2)
+[nlink-jp](https://github.com/nlink-jp)
