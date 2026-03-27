@@ -6,7 +6,7 @@ This project was collaboratively developed by **magifd2** and **Google's Gemini*
 
 ## **Overview**
 
-`json-to-table` is a versatile command-line utility written in Go, designed as a companion tool for [`magifd2/splunk-cli`](https://github.com/magifd2/splunk-cli). It formats a JSON array into a well-structured table. It reads JSON data from standard input, making it ideal for directly piping the output of commands like `splunk-cli ... | jq .results` to convert it into a human-readable format or an image suitable for reports.
+`json-to-table` is a versatile command-line utility written in Go, designed as a companion tool for [`magifd2/splunk-cli`](https://github.com/nlink-jp/splunk-cli). It formats a JSON array into a well-structured table. It reads JSON data from standard input, making it ideal for directly piping the output of commands like `splunk-cli ... | jq .results` to convert it into a human-readable format or an image suitable for reports.
 
 For a detailed list of changes, please see the [CHANGELOG](CHANGELOG.md).
 
@@ -31,7 +31,7 @@ For a detailed list of changes, please see the [CHANGELOG](CHANGELOG.md).
 
 ## **Installation**
 
-Pre-compiled binaries for macOS, Windows, and Linux are available on the [Releases](https://github.com/magifd2/json-to-table/releases) page.
+Pre-compiled binaries for macOS, Windows, and Linux are available on the [Releases](https://github.com/nlink-jp/json-to-table/releases) page.
 
 ## **Usage**
 
@@ -145,7 +145,7 @@ To build the project from source, you need Go and `make` installed.
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/magifd2/json-to-table.git
+    git clone https://github.com/nlink-jp/json-to-table.git
     cd json-to-table
     ```
 
