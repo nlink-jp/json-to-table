@@ -1,4 +1,4 @@
-module json-to-table
+module github.com/nlink-jp/json-to-table
 
 go 1.24.5
 
