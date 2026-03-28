@@ -117,25 +117,20 @@ func renderAsPNG(table [][]string, title string, fontSize float64) ([]byte, erro
 	// --- Draw Grid Lines ---
 	tableTop := titleHeight + padding/2
 	tableBottom := tableTop + len(table)*lineHeight
+	lineImg := &image.Uniform{C: lineColor}
 	// Horizontal lines
-	for i := 0; i <= len(table); i++ {
+	for i := range len(table) + 1 {
 		yLine := tableTop + i*lineHeight
-		for x := 0; x < totalWidth; x++ {
-			img.Set(x, yLine, lineColor)
-		}
+		draw.Draw(img, image.Rect(0, yLine, totalWidth, yLine+1), lineImg, image.Point{}, draw.Src)
 	}
 	// Vertical lines
 	x := 0
 	for i := 0; i < len(colWidths); i++ {
-		for y := tableTop; y < tableBottom; y++ {
-			img.Set(x, y, lineColor)
-		}
+		draw.Draw(img, image.Rect(x, tableTop, x+1, tableBottom), lineImg, image.Point{}, draw.Src)
 		x += colWidths[i] + padding
 	}
 	// Last vertical line
-	for y := tableTop; y < tableBottom; y++ {
-		img.Set(totalWidth-1, y, lineColor)
-	}
+	draw.Draw(img, image.Rect(totalWidth-1, tableTop, totalWidth, tableBottom), lineImg, image.Point{}, draw.Src)
 
 	// --- Encoding ---
 	var buf bytes.Buffer

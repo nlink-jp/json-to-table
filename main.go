@@ -32,7 +32,11 @@ func main() {
 	}
 
 	// Check if data is being piped
-	stat, _ := os.Stdin.Stat()
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: failed to stat stdin: %v\n", err)
+		os.Exit(1)
+	}
 	if (stat.Mode() & os.ModeCharDevice) != 0 {
 		fmt.Fprintln(os.Stderr, "Error: This tool requires JSON data to be piped via stdin.")
 		fmt.Fprintln(os.Stderr, "Usage: cat data.json | json-to-table")

@@ -10,20 +10,12 @@ func renderAsText(table [][]string) (string, error) {
 	if len(table) == 0 {
 		return "", nil
 	}
-	
+
 	colWidths := make([]int, len(table[0]))
 	for _, row := range table {
 		for i, cell := range row {
-			width := 0
-			for _, r := range cell {
-				if r > 255 {
-					width += 2
-				} else {
-					width++
-				}
-			}
-			if width > colWidths[i] {
-				colWidths[i] = width
+			if w := measureWidth(cell); w > colWidths[i] {
+				colWidths[i] = w
 			}
 		}
 	}
@@ -31,11 +23,7 @@ func renderAsText(table [][]string) (string, error) {
 	var builder strings.Builder
 	// Header
 	for i, header := range table[0] {
-		cellWidth := 0
-		for _, r := range header {
-			if r > 255 { cellWidth += 2 } else { cellWidth++ }
-		}
-		padding := colWidths[i] - cellWidth
+		padding := colWidths[i] - measureWidth(header)
 		builder.WriteString(fmt.Sprintf("| %s%s ", header, strings.Repeat(" ", padding)))
 	}
 	builder.WriteString("|\n")
@@ -49,11 +37,7 @@ func renderAsText(table [][]string) (string, error) {
 	// Body
 	for _, row := range table[1:] {
 		for i, cell := range row {
-			cellWidth := 0
-			for _, r := range cell {
-				if r > 255 { cellWidth += 2 } else { cellWidth++ }
-			}
-			padding := colWidths[i] - cellWidth
+			padding := colWidths[i] - measureWidth(cell)
 			builder.WriteString(fmt.Sprintf("| %s%s ", cell, strings.Repeat(" ", padding)))
 		}
 		builder.WriteString("|\n")

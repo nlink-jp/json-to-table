@@ -8,6 +8,19 @@ import (
 	"strings"
 )
 
+// measureWidth returns the display width of s, counting non-ASCII runes as 2.
+func measureWidth(s string) int {
+	w := 0
+	for _, r := range s {
+		if r > 255 {
+			w += 2
+		} else {
+			w++
+		}
+	}
+	return w
+}
+
 // matchHeaders applies patterns to a list of headers.
 // If isExclusion is true, it returns headers NOT matching the patterns.
 // If isExclusion is false, it returns headers matching the patterns, in the order specified by patterns.
@@ -99,7 +112,7 @@ func matchHeaders(availableHeaders []string, patterns string, isExclusion bool) 
 // parseJSON reads JSON from an io.Reader and converts it into a table structure,
 // respecting the user-defined column order with advanced wildcards.
 func parseJSON(r io.Reader, columnOrder string, excludeColumnOrder string) ([][]string, error) {
-	var data []map[string]interface{}
+	var data []map[string]any
 	decoder := json.NewDecoder(r)
 	if err := decoder.Decode(&data); err != nil {
 		return nil, fmt.Errorf("failed to decode json: %w", err)
@@ -120,6 +133,7 @@ func parseJSON(r io.Reader, columnOrder string, excludeColumnOrder string) ([][]
 	for h := range allHeadersSet {
 		allHeadersList = append(allHeadersList, h)
 	}
+
 	sort.Strings(allHeadersList) // Ensure initial list is sorted
 
 	// 2. Apply exclusion patterns first

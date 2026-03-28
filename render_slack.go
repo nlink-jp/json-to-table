@@ -6,89 +6,77 @@ import (
 	"fmt"
 )
 
+type slackTextStyle struct {
+	Bold bool `json:"bold,omitempty"`
+}
+
+type slackTextElement struct {
+	Type  string          `json:"type"`
+	Text  string          `json:"text"`
+	Style *slackTextStyle `json:"style,omitempty"`
+}
+
+type slackRichTextSection struct {
+	Type     string             `json:"type"`
+	Elements []slackTextElement `json:"elements"`
+}
+
+type slackRichText struct {
+	Type     string                 `json:"type"`
+	Elements []slackRichTextSection `json:"elements"`
+}
+
+type slackTableBlock struct {
+	Type string           `json:"type"`
+	Rows [][]slackRichText `json:"rows"`
+}
+
+// newRichTextCell constructs a single Slack rich_text cell.
+func newRichTextCell(text string, bold bool) slackRichText {
+	var style *slackTextStyle
+	if bold {
+		style = &slackTextStyle{Bold: true}
+	}
+	return slackRichText{
+		Type: "rich_text",
+		Elements: []slackRichTextSection{
+			{
+				Type: "rich_text_section",
+				Elements: []slackTextElement{
+					{Type: "text", Text: text, Style: style},
+				},
+			},
+		},
+	}
+}
+
 // renderAsSlackBlockKit formats the table as Slack Block Kit JSON.
 func renderAsSlackBlockKit(table [][]string) ([]byte, error) {
 	if len(table) == 0 {
 		return nil, errors.New("cannot generate Slack Block Kit from empty data")
 	}
 
-	type TextStyle struct {
-		Bold bool `json:"bold,omitempty"`
-	}
+	var tableRows [][]slackRichText
 
-	type TextElement struct {
-		Type  string     `json:"type"`
-		Text  string     `json:"text"`
-		Style *TextStyle `json:"style,omitempty"`
-	}
-
-	type RichTextSection struct {
-		Type    string        `json:"type"`		
-		Elements []TextElement `json:"elements"`
-	}
-
-	type RichText struct {
-		Type    string            `json:"type"`
-		Elements []RichTextSection `json:"elements"`
-	}
-
-	type TableBlock struct {
-		Type string `json:"type"`
-		Rows [][]RichText `json:"rows"`
-	}
-
-	var tableRows [][]RichText
-
-	// Header row
-	headerRow := make([]RichText, len(table[0]))
+	// Header row (bold)
+	headerRow := make([]slackRichText, len(table[0]))
 	for i, header := range table[0] {
-		headerRow[i] = RichText{
-			Type: "rich_text",
-			Elements: []RichTextSection{
-				{
-					Type: "rich_text_section",
-					Elements: []TextElement{
-						{
-							Type: "text",
-							Text: header,
-							Style: &TextStyle{Bold: true},
-						},
-					},
-				},
-			},
-		}
+		headerRow[i] = newRichTextCell(header, true)
 	}
 	tableRows = append(tableRows, headerRow)
 
 	// Data rows
 	for _, rowData := range table[1:] {
-		dataRow := make([]RichText, len(rowData))
+		dataRow := make([]slackRichText, len(rowData))
 		for i, cell := range rowData {
-			dataRow[i] = RichText{
-				Type: "rich_text",
-				Elements: []RichTextSection{
-					{
-						Type: "rich_text_section",
-						Elements: []TextElement{
-							{
-								Type: "text",
-								Text: cell,
-							},
-						},
-					},
-				},
-			}
+			dataRow[i] = newRichTextCell(cell, false)
 		}
 		tableRows = append(tableRows, dataRow)
 	}
 
-	// Wrap in a top-level "blocks" object
-	output := map[string]interface{}{
-		"blocks": []TableBlock{
-			{
-				Type: "table",
-				Rows: tableRows,
-			},
+	output := map[string]any{
+		"blocks": []slackTableBlock{
+			{Type: "table", Rows: tableRows},
 		},
 	}
 
