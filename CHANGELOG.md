@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachanglog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3] - 2026-03-28
+
+### Internal
+
+- Extracted `measureWidth()` helper; eliminated duplicated width-calculation loops in `render_text.go`.
+- Extracted `newRichTextCell()` helper; moved Slack type definitions to package scope in `render_slack.go`.
+- Replaced pixel-by-pixel grid drawing with `draw.Draw` in `render_image.go`.
+- Fixed silently ignored `os.Stdin.Stat()` error in `main.go`.
+- Added 31 unit tests covering `measureWidth`, `matchHeaders`, `parseJSON`, and all renderers.
+
 ## [1.4.2] - 2026-03-28
 
 ### Changed
