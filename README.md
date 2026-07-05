@@ -171,7 +171,7 @@ To build the project from source, you need Go and `make` installed.
 
 ## **Acknowledgements**
 
-This tool uses the **Mplus 1 Code** font, which is licensed under the SIL Open Font License, Version 1.1. We are grateful to the M+ FONTS Project for providing this excellent font.
+This tool uses the **M PLUS 1p** font, which is licensed under the SIL Open Font License, Version 1.1. We are grateful to the M+ FONTS Project for providing this excellent font.
 
 ## **License**
 

@@ -171,7 +171,7 @@ cat testdata/test_data.json | json-to-table
 
 ## **謝辞**
 
-このツールは **Mplus 1 Code** フォントを使用しています。このフォントは、SIL Open Font License, Version 1.1 のもとでライセンスされています。素晴らしいフォントを提供してくださった M+ FONTS Project に感謝します。
+このツールは **M PLUS 1p** フォントを使用しています。このフォントは、SIL Open Font License, Version 1.1 のもとでライセンスされています。素晴らしいフォントを提供してくださった M+ FONTS Project に感謝します。
 
 ## **ライセンス**
 
