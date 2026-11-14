@@ -1,7 +1,10 @@
 module github.com/nlink-jp/json-to-table
 
-go 1.24.5
+go 1.27.4
 
-require golang.org/x/image v0.29.0
+require golang.org/x/image v0.46.0
 
-require golang.org/x/text v0.27.0 // indirect
+require (
+	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
+)
