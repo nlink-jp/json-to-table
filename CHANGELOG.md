@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-11-14
+
+### Security
+
+- **`golang.org/x/image` is updated from v0.29.0 to v0.46.0.** `govulncheck`
+  reported GO-2026-4962 (a crafted font makes the SFNT parser allocate too
+  much memory) as reachable, and it is: the PNG output parses a font. The
+  only font it parses is the one built into the binary, so no input of the
+  user's reaches that parser. Nine more advisories in the same module are in
+  image decoders (TIFF, WebP, BMP) this tool does not use. The update takes
+  the affected code out of the build.
+- **The binaries are built with Go 1.27.4, and `go.mod` now requires it** (it
+  was 1.24.5). The binaries of v1.5.0 were built with Go 1.26.4 in July.
+
+### Changed
+
+- **`make package` runs the vulnerability check first** (`make vuln`), so a
+  release cannot be built past a finding.
+- `make check` passes again: five findings of the current linter (two
+  `Close` results not looked at, three `WriteString(fmt.Sprintf(...))`) are
+  resolved with no change in behaviour.
+
 ### Fixed
 
 - **`make verify-release` now fails closed.** Its last block chained unzip, the
