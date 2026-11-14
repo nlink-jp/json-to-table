@@ -24,13 +24,13 @@ func renderAsText(table [][]string) (string, error) {
 	// Header
 	for i, header := range table[0] {
 		padding := colWidths[i] - measureWidth(header)
-		builder.WriteString(fmt.Sprintf("| %s%s ", header, strings.Repeat(" ", padding)))
+		fmt.Fprintf(&builder, "| %s%s ", header, strings.Repeat(" ", padding))
 	}
 	builder.WriteString("|\n")
 
 	// Separator
 	for _, width := range colWidths {
-		builder.WriteString(fmt.Sprintf("|-%s-", strings.Repeat("-", width)))
+		fmt.Fprintf(&builder, "|-%s-", strings.Repeat("-", width))
 	}
 	builder.WriteString("|\n")
 
@@ -38,7 +38,7 @@ func renderAsText(table [][]string) (string, error) {
 	for _, row := range table[1:] {
 		for i, cell := range row {
 			padding := colWidths[i] - measureWidth(cell)
-			builder.WriteString(fmt.Sprintf("| %s%s ", cell, strings.Repeat(" ", padding)))
+			fmt.Fprintf(&builder, "| %s%s ", cell, strings.Repeat(" ", padding))
 		}
 		builder.WriteString("|\n")
 	}

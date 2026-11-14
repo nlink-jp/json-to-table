@@ -83,7 +83,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error creating output file: %+v\n", err)
 			os.Exit(1)
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 		writer = file
 	}
 

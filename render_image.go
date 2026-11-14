@@ -45,7 +45,7 @@ func renderAsPNG(table [][]string, title string, fontSize float64) ([]byte, erro
 	if err != nil {
 		return nil, fmt.Errorf("failed to create font face: %w", err)
 	}
-	defer face.Close()
+	defer func() { _ = face.Close() }()
 
 	// --- Layout Calculation ---
 	padding := int(fontSize)
